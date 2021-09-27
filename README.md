@@ -1,6 +1,5 @@
 # Finger-Counter-using-Hand-Tracking-using-OpenCV
-To build how to count fingers. We first look into hand tracking and then we will use the hand landmarks to count of the fingers.
-# Hand-Tracking-30FPS-using-OpenCV #
+
 ## Table of Content ##
 - [Overview](#overview) 
 - [Motivation](#motivation) 
@@ -12,7 +11,7 @@ To build how to count fingers. We first look into hand tracking and then we will
 - [Team](#team) 
 
 ## Overview 
-OpenCV is a library used for computer vision applications. With help of OpenCV, we can build an enormous number of applications that work better in real-time. Mainly it is used for image and video processing. This project all about Hand Tracking in real time using OpenCV. In this Hand Tracking project, we’ve built a hand gesture recognizer using OpenCV and python. We’ve used MediaPipe and Tensorflow framework for the detection and gesture recognition respectively. Here we’ve learned about the basics of the Neural Network, File handling, some common image processing techniques, etc.
+To build how to count fingers. We first look into hand tracking and then we will use the hand landmarks to count of the fingers. OpenCV is a library used for computer vision applications. With help of OpenCV, we can build an enormous number of applications that work better in real-time. Mainly it is used for image and video processing. This project all about Hand Tracking in real time using OpenCV. In this Hand Tracking project, we’ve built a hand gesture recognizer using OpenCV and python. We’ve used MediaPipe and Tensorflow framework for the detection and gesture recognition respectively. Here we’ve learned about the basics of the Neural Network, File handling, some common image processing techniques, etc.
 
 ![Hand_Tracking](Images/fii.gif)
 
