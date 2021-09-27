@@ -55,49 +55,90 @@ Some of the major applications of MediaPipe.
 ``` python
 
 # Install the Libraries
-
 import cv2
-import mediapipe as mp
+import os
 import time
+import Hand_Tracking_Module as htm
 
 ```
 ``` python
-
+# Set Web Cam
 cap = cv2.VideoCapture(0)
-mpHands = mp.solutions.hands
-hands = mpHands.Hands()
-mpDraw = mp.solutions.drawing_utils
-cTime = 0
+wCam = 640
+hCam = 480
+
+cap.set(3, wCam)
+cap.set(4, hCam)
+```
+``` python
+# Reading Images
+FolderPath = "FingerImages"
+MyList = os.listdir(FolderPath)
+print(MyList)
+overlayList = []
+for imPath in MyList:
+    image = cv2.imread(f'{FolderPath}/{imPath}')
+    #print(f'{FolderPath}/{imPath}')
+    overlayList.append(image)
+
+print(len(overlayList))
 pTime = 0
 ```
 ``` python
 # Function Start
+detector = htm.handDetector(detectionCon=0.75)
+
+tipIds = [4, 8, 12, 16, 20]
+
 while True:
+
     success, img = cap.read()
-    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    results = hands.process(imgRGB)
-    #print(results.multi_hand_landmarks)
-    if results.multi_hand_landmarks:
-        for handlms in results.multi_hand_landmarks:
-            for id, lm in enumerate(handlms.landmark):
-                #print(id, lm)
-                h, w, c = img.shape
-                cx, cy = int(lm.x*w), int(lm.y*h)
-                print(id, cx, cy)
-                #if id == 5:
-                cv2.circle(img, (cx, cy), 15, (139, 0, 0), cv2.FILLED)
+    img = detector.findHands(img)
+    lmlist = detector.findPosition(img, draw=False)
+    #print(lmlist)
+
+    if len(lmlist) != 0:
+        fingers = []
+```
+
+``` Consider Thumps for unique hand landmark
+        #Thumps
+
+        if lmlist[tipIds[0]][1] > lmlist[tipIds[0]-1][1]:
+            fingers.append(1)
+        else:
+            fingers.append(0)
+        # Four Fingers
+        for id in range(1, 5):
+            if lmlist[tipIds[id]][2] < lmlist[tipIds[id]-2][2]:
+                fingers.append(1)
+            else:
+                fingers.append(0)
+
+```
+
+``` python
+# Consider other four gingers for unique hand landmark
+        # Printing Number of Fingers
+
+        totalFingers = fingers.count(1)
+        print(totalFingers)
 
 
-            mpDraw.draw_landmarks(img, handlms, mpHands.HAND_CONNECTIONS)
+        h, w, c = overlayList[totalFingers-1].shape
+        img[0:h, 0:w] = overlayList[totalFingers-1]
+
+        cv2.rectangle(img, (20, 225), (170, 425), (0, 255, 0), cv2.FILLED)
+        cv2.putText(img, str(totalFingers), (45, 375), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 0, 0), 25)
 ```
 ``` python 
-# Time and FPS Calculation
 
+# FPS Calculation
     cTime = time.time()
-    fps = 1/(cTime-pTime)
+    fps = 1 / (cTime-pTime)
     pTime = cTime
-    
-    cv2.putText(img, str(int(fps)), (10,70), cv2.FONT_HERSHEY_SIMPLEX, 3, (139,0,0), 3)
+
+    cv2.putText(img, f'FPS:{int(fps)}', (400, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (220, 20, 60), 2)
 
     cv2.imshow("Image", img)
     cv2.waitKey(1)
